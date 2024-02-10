@@ -24,8 +24,8 @@ with open(File, 'r') as file:
 
 # Plotting
 plt.figure()
-plt.imshow(result, extent=[min(espaceX), max(espaceX), min(t_values), max(t_values)], aspect='auto')
-plt.title('Iron coper')
+plt.imshow(result, extent=[min(espaceX), max(espaceX), max(t_values), min(t_values)], aspect='auto')
+plt.title('Iron                 coper')
 plt.xlabel('Distance in metre')
 plt.ylabel('Time in seconde')
 cb = plt.colorbar()

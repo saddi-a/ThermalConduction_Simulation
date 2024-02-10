@@ -34,3 +34,6 @@ Util.o : Util.c
 clean :
 	rm ${OBJ}
 	rm main.out
+
+cleandb:
+	rm -r data
