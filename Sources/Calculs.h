@@ -2,6 +2,7 @@
 #define Calculs_h
 
     #include "listeSC.h"
+    #include "Util.h"
 
     #include <stdlib.h>
     #include <stdio.h>
@@ -10,16 +11,16 @@
 typedef struct{
 
     double x; //distance suivant x
-    double dx; //échantillonage spatial suivant x
-    int Nx; //Nombre d'échantillion spatial suivant x
+    double dx; //ï¿½chantillonage spatial suivant x
+    int Nx; //Nombre d'ï¿½chantillion spatial suivant x
 
     double y; //distance suivant y
-    double dy; //échantillonage spatial suivant y
-    int Ny; //Nombre d'échantillion spatial suivant y
+    double dy; //ï¿½chantillonage spatial suivant y
+    int Ny; //Nombre d'ï¿½chantillion spatial suivant y
 
     double t; //temps de simulation
-    double dt; //échantillonage temporel
-    int Nt; //Nombre d'échantillion temporel
+    double dt; //ï¿½chantillonage temporel
+    int Nt; //Nombre d'ï¿½chantillion temporel
 
     int** SourcesDeChaleur; //Sources de challeur fixe (0) ou variable(1)
     double** AlphaLocal; //Valleur de alpha en chaque points
@@ -29,37 +30,37 @@ typedef struct{
 
 typedef struct {
 
-    double** Temp_Init; //matrice pour initialiser la tempérautre
-    Def_Domaine Domaine_Init; //pour initialiser notre domaine étude
+    double** Temp_Init; //matrice pour initialiser la tempï¿½rautre
+    Def_Domaine Domaine_Init; //pour initialiser notre domaine ï¿½tude
 
 } Condition_Probleme; //Structure contenant les informations du problemme
 
 typedef struct{
-    double K; //conductivité thermique
-    double C; //capacité calorifique
+    double K; //conductivitï¿½ thermique
+    double C; //capacitï¿½ calorifique
     double rho; //masse volumique
 
     double alpha; //coefficient
     char Nom[30]; //Nom du materiaux
 
-}Materiau; //Structure contenant les informations d'un matériau donné
+}Materiau; //Structure contenant les informations d'un matï¿½riau donnï¿½
 
 typedef struct{
 
-    ListeSC *Elements;//Liste chainée de Materiaux
+    ListeSC *Elements;//Liste chainï¿½e de Materiaux
 
-}ListeMateriaux;//Structure contenant une liste chainée de Materiaux
+}ListeMateriaux;//Structure contenant une liste chainï¿½e de Materiaux
 
 
 void MillieuxInhomogene(char* adresseMat, char* adresseCondPb, char* adresseSourcesDeChaleur,char *adresseTypeMat);//Fonction principale
 
-void CalculsInhomogene2D(Condition_Probleme init,char* RacineAdresse);//Fonction de calcule et d'écriture des résultat pour une simulation en 2D
+void CalculsInhomogene2D(Condition_Probleme init,char* RacineAdresse);//Fonction de calcule et d'ï¿½criture des rï¿½sultat pour une simulation en 2D
 
-void CalculsInhomogene1D(Condition_Probleme init ,char* adresse);//Fonction de calcule et d'écriture des résultat pour une simulation en 1D
+void CalculsInhomogene1D(Condition_Probleme init ,char* adresse);//Fonction de calcule et d'ï¿½criture des rï¿½sultat pour une simulation en 1D
 
-void InitialisationTXT1D(FILE*ftxt,Condition_Probleme init,double *calcule);//Fonction d'initialisation du fichier de réponse 1D
+void InitialisationTXT1D(FILE*ftxt,Condition_Probleme init,double *calcule);//Fonction d'initialisation du fichier de rï¿½ponse 1D
 
-void ConcatenationFichier2D(char *adresse,const char* debut,int i);//Contatenation d'adresse pour la lécture et l'écriture de fichier txt
+void ConcatenationFichier2D(char *adresse,const char* debut,int i);//Contatenation d'adresse pour la lï¿½cture et l'ï¿½criture de fichier txt
 
 void Initilisation_Calculs2D(char* adresse,Condition_Probleme init,double **calcule);//Fonction d'initialisation des calcules en 2D
 
