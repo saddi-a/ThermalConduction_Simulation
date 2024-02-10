@@ -37,3 +37,5 @@ clean :
 
 cleandb:
 	rm -r data
+
+cleanall: clean cleandb
