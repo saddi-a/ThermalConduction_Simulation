@@ -2,19 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Calculs.h"
+#include "Computation.h"
 #include "listeSC.h"
 #include "Initialisation.h"
 
-#define MAT "data/Materiaux.txt"
-#define CONDINIT "data/ConditionsInitiales.txt"
-#define SOURCEDECHAL "data/SourcesDeChaleur.txt"
-#define TYPEMAT "data/TypesDeMateriaux.txt"
+#define MATERIAL "data/Materiaux.txt"
+#define INITALCONDITION "data/ConditionsInitiales.txt"
+#define HEATSOURCES "data/SourcesDeChaleur.txt"
+#define MATERIALSTYPES "data/TypesDeMateriaux.txt"
 
 
 int main(){
 
-    MillieuxInhomogene( MAT , CONDINIT, SOURCEDECHAL,TYPEMAT);
+    InhomogeneousEnvironments( MATERIAL , INITALCONDITION, HEATSOURCES,MATERIALSTYPES);
 
     return 0;
 }

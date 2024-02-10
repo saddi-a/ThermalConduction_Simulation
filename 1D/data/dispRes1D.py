@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define the file path
-File = 'Resultat/Inhomogene.txt'
+File = 'Results/Inhomogeneous.txt'
 
 # Open the file
 with open(File, 'r') as file:
@@ -25,7 +25,7 @@ with open(File, 'r') as file:
 # Plotting
 plt.figure()
 plt.imshow(result, extent=[min(espaceX), max(espaceX), max(t_values), min(t_values)], aspect='auto')
-plt.title('Iron                 coper')
+plt.title('Iron                 Cooper')
 plt.xlabel('Distance in metre')
 plt.ylabel('Time in seconde')
 cb = plt.colorbar()

@@ -3,35 +3,35 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "Calculs.h"
+#include "Computation.h"
 
 
-Condition_Probleme Creer_Condition_Probleme(int Nx , int Ny,Def_Domaine domain); //Initialiser une structure Condition_Problemme
+Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition domain); //Initialiser une structure Condition_Problemme
 
-Condition_Probleme Lire_Condition_Probleme(char* adresse , char* adresseSourcesDeChaleur,char*adresseTypeMat,ListeMateriaux materiaux);//Lecture et création de la structure des conditions du problemme
+Issue_Condition Read_Issue_Condition(char* adresse , char* adresseSourcesDeChaleur,char*materialsTypesAdress,Materials_List materials);//Lecture et crï¿½ation de la structure des conditions du problemme
 
-void Liberer_Condition_Probleme(Condition_Probleme *init); //Libération de la mémoire allouée a la structure des conditions du problemme
+void Free_Issue_Condition(Issue_Condition *init); //Libï¿½ration de la mï¿½moire allouï¿½e a la structure des conditions du problemme
 
-ListeMateriaux Creer_Materiaux(); //Crée une liste chainée vide de materiaux
+Materials_List Create_Materiaux(); //Crï¿½e une liste chainï¿½e vide de materials
 
-ListeMateriaux Lire_Materiaux(char* adresse);//Fonction de lecture du fichier de materiaux pour les enregistrer dans une liste chainée
+Materials_List Read_Materiaux(char* adresse);//Fonction de lecture du fichier de materials pour les enregistrer dans une liste chainï¿½e
 
-void Liberer_ListeMateriaux(ListeMateriaux *mat);//liberation la mémoire alloué dynamiquement
+void Free_Materials_List(Materials_List *mat);//liberation la mï¿½moire allouï¿½ dynamiquement
 
 int** Allocation_Tableau_int_2D(int x,int y);//Alocation dynamique d'une matrice d'entier
 
-double** Allocation_Tableau_double_2D(int x,int y);//Alocation dynamique d'une matrice de réelle
+double** Allocation_Tableau_double_2D(int x,int y);//Alocation dynamique d'une matrice de rï¿½elle
 
-void Liberer_Tableau(void **matrice,int y);//Libération de la mémoire allouée pour une matrice
+void Free_Table(void **matrice,int y);//Libï¿½ration de la mï¿½moire allouï¿½e pour une matrice
 
-Def_Domaine Lire_Def_Domaine(char* adresseSourceDeChaleur,char* adresseTypeMat,ListeMateriaux materiaux);//lecture des fichier de la structure de définition de domaine
+Environment_Definition Read_Environment_Definition(char* heatSourcesAdress,char* materialsTypesAdress,Materials_List materials);//lecture des fichier de la structure de dï¿½finition de environment
 
-int** Lire_Source_De_Chaleur(char *adresse);//Lecture du fichier de source de chaleur
+int** Read_Source_De_Chaleur(char *adresse);//Lecture du fichier de source de chaleur
 
-int** Lire_TypeMat(char* adresse_Typ_Mat,int length,int *x,int *y);//Lecture du fichier de type de materiaux
+int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y);//Lecture du fichier de type de materials
 
-double** Calcul_alpha(char *adresse_Typ_Mat,ListeMateriaux materiaux);//Détérmination de la valleur local du coefficient alpha
+double** Compute_alpha(char *materialsTypesAdress,Materials_List materials);//Dï¿½tï¿½rmination de la valleur local du coefficient alpha
 
-void Lire_ChaleurVariable(char *adresse,double** chaleur);//Lecture du fichier challeur variable
+void Read_VariableHeat(char *adresse,double** chaleur);//Lecture du fichier challeur variable
 
 #endif

@@ -6,16 +6,16 @@
     #define DEBUT_ADRESSE "data/Resultat/"
     #define DECIMALE 10
 
-/** Création de Condition_Probleme
-	  * @param Nx : échantillonage spatial sur x (abcisses)
-	  * @param Ny : échantillonage spatial sur y (ordonnées)
-	  * @param domain : données du domaine d'étude du problème
-	  * @return init : Condition_Probleme généré
+/** Crï¿½ation de Issue_Condition
+	  * @param Nx : ï¿½chantillonage spatial sur x (abcisses)
+	  * @param Ny : ï¿½chantillonage spatial sur y (ordonnï¿½es)
+	  * @param domain : donnï¿½es du environment d'ï¿½tude du problï¿½me
+	  * @return init : Issue_Condition gï¿½nï¿½rï¿½
 	  */
 
-Condition_Probleme Creer_Condition_Probleme(int Nx , int Ny,Def_Domaine domain){
+Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition domain){
 
-    Condition_Probleme init;
+    Issue_Condition init;
     init.Domaine_Init=domain;
     init.Temp_Init= Allocation_Tableau_double_2D(Nx,Ny);
 
@@ -23,47 +23,47 @@ Condition_Probleme Creer_Condition_Probleme(int Nx , int Ny,Def_Domaine domain){
 }
 
 
-/** Suppressions des deux matrices Sources de chaleur et Temp_Init(températures initiales) dans la structure Condition_Probleme
-	  * @param init : Condition_Probleme à supprimer
+/** Suppressions des deux matrixs Sources de chaleur et Temp_Init(tempï¿½ratures initiales) dans la structure Issue_Condition
+	  * @param init : Issue_Condition ï¿½ supprimer
 	  */
 
-void Liberer_Condition_Probleme(Condition_Probleme *init){
-    int y=(init->Domaine_Init.Ny); //récupère la taille des matrices
-    Liberer_Tableau((void **)init->Domaine_Init.SourcesDeChaleur,y); //appelle la fonction Liberer_Tableau pour supprimer source de chaleur
-    Liberer_Tableau((void **)init->Temp_Init,y); //appelle la fonction Liberer_Tableau pour supprimer Temp_Init
+void Free_Issue_Condition(Issue_Condition *init){
+    int y=(init->Domaine_Init.Ny); //rï¿½cupï¿½re la taille des matrixs
+    Free_Table((void **)init->Domaine_Init.HeatSources,y); //appelle la fonction Free_Table pour supprimer source de chaleur
+    Free_Table((void **)init->Temp_Init,y); //appelle la fonction Free_Table pour supprimer Temp_Init
 }
 
 
-/** Lecture et écriture des conditions du problème
-	  * @param adresse : adresse d'un fichier qui contient les données de la structure Condition_Probleme
-		* @param adresseSourcesDeChaleur : adresse d'un fichier qui contient l'emplacement et les variations des sources de chaleur
-	  * @param adresseTypeMat : adresse qd'un fichier ui contient les nombres qui correspondent à différents types de matériaux
-	  * @param materiaux : liste contenant les matériaux et leurs caractéristiques
-	  * @return init : Condition_Probleme généré
+/** Lecture et ï¿½criture des conditions du problï¿½me
+	  * @param adress : adress d'un fichier qui contient les donnï¿½es de la structure Issue_Condition
+		* @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
+	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent ï¿½ diffï¿½rents types de matï¿½riaux
+	  * @param materials : liste contenant les matï¿½riaux et leurs caractï¿½ristiques
+	  * @return init : Issue_Condition gï¿½nï¿½rï¿½
 	  */
 
-Condition_Probleme Lire_Condition_Probleme(char* adresse , char* adresseSourcesDeChaleur,char*adresseTypeMat,ListeMateriaux materiaux){
-    Condition_Probleme init;
-    init.Temp_Init=NULL; //sécurité
-    init.Domaine_Init.SourcesDeChaleur=NULL; //sécurité
+Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char*materialsTypesAdress,Materials_List materials){
+    Issue_Condition init;
+    init.Temp_Init=NULL; //sï¿½curitï¿½
+    init.Domaine_Init.HeatSources=NULL; //sï¿½curitï¿½
 
-    Def_Domaine domain=Lire_Def_Domaine(adresseSourcesDeChaleur,adresseTypeMat, materiaux); //on crée un domaine
+    Environment_Definition domain=Read_Environment_Definition(heatSourcesAdress,materialsTypesAdress, materials); //on crï¿½e un environment
     double x,y,t,T;
     int Nx,Ny,Nt,i,j;
 
 
-    FILE* fTxt=fopen(adresse,"r"); //ouverture du fichier
+    FILE* fTxt=fopen(adress,"r"); //ouverture du fichier
     if(fTxt != NULL){
         if(fscanf(fTxt,"%lf %d %lf %d %lf %d",&x,&Nx,&y,&Ny,&t,&Nt)==6 ){ //Lecture et stockage des conditions initiales
-            init = Creer_Condition_Probleme(Nx,Ny,domain); //création de la structure des conditions initiales
-            //écriture des paramètres d'initialisation dans init
+            init = Create_Issue_Condition(Nx,Ny,domain); //crï¿½ation de la structure des conditions initiales
+            //ï¿½criture des paramï¿½tres d'initialisation dans init
             init.Domaine_Init.x=x;    init.Domaine_Init.dx=x/Nx;   init.Domaine_Init.Nx=Nx;
             init.Domaine_Init.y=y;    init.Domaine_Init.dy=y/Ny;   init.Domaine_Init.Ny=Ny;
             init.Domaine_Init.t=t;    init.Domaine_Init.dt=t/Nt;   init.Domaine_Init.Nt=Nt;
 
             for(i=0; i<Ny; i++){
                 for(j=0;j<Nx;j++){
-                    if( fscanf(fTxt,"%lf ",&T) ) //écriture des températures initiales dans Temp_Init
+                    if( fscanf(fTxt,"%lf ",&T) ) //ï¿½criture des tempï¿½ratures initiales dans Temp_Init
                         init.Temp_Init[i][j]=T;
                     else
                         printf("Erreur, les valeurs d'initialisation n'ont pas ete lue\n");
@@ -72,54 +72,54 @@ Condition_Probleme Lire_Condition_Probleme(char* adresse , char* adresseSourcesD
                 }//fin for Ny
             }//fin if scanf
         else
-            printf("Erreur, les paramètres d'initialisation n'ont pas été lue\n");
+            printf("Erreur, les paramï¿½tres d'initialisation n'ont pas ï¿½tï¿½ lue\n");
 
         fclose(fTxt); //fermeture du fichier
         }
     else
-        printf("Erreur, le fichier d'initialisation n'a pas été ouvert\n") ;
+        printf("Erreur, le fichier d'initialisation n'a pas ï¿½tï¿½ ouvert\n") ;
 
     return init;
 }
 
 
-/** Lecture et écriture des données du domaine d'étude
-		* @param adresseSourcesDeChaleur : adresse d'un fichier qui contient l'emplacement et les variations des sources de chaleur
-	  * @param adresseTypeMat : adresse qd'un fichier ui contient les nombres qui correspondent à différents types de matériaux
-	  * @param materiaux : liste contenant les matériaux et leurs caractéristiques
-	  * @return domaine : Def_Domaine généré
+/** Lecture et ï¿½criture des donnï¿½es du environment d'ï¿½tude
+		* @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
+	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent ï¿½ diffï¿½rents types de matï¿½riaux
+	  * @param materials : liste contenant les matï¿½riaux et leurs caractï¿½ristiques
+	  * @return environment : Environment_Definition gï¿½nï¿½rï¿½
 	  */
 
-Def_Domaine Lire_Def_Domaine(char* adresseSourceDeChaleur,char* adresseTypeMat,ListeMateriaux materiaux){
+Environment_Definition Read_Environment_Definition(char* heatSourcesAdress,char* materialsTypesAdress,Materials_List materials){
 
-    Def_Domaine domaine;
-    domaine.SourcesDeChaleur=Lire_Source_De_Chaleur(adresseSourceDeChaleur ); //créer la matrice Sources de Chaleur qui indique si il y a une source de chaleur en chaque pts de l'espace
+    Environment_Definition environment;
+    environment.HeatSources=Read_Source_De_Chaleur(heatSourcesAdress ); //crï¿½er la matrix Sources de Chaleur qui indique si il y a une source de chaleur en chaque pts de l'espace
 
-    domaine.AlphaLocal=Calcul_alpha(adresseTypeMat,materiaux); //créer la matrice AlphaLocal qui contientle alpha en chacun des points de l'espace étudié
+    environment.LocalAlpha=Compute_alpha(materialsTypesAdress,materials); //crï¿½er la matrix HeatSources qui contientle alpha en chacun des points de l'espace ï¿½tudiï¿½
 
-    return domaine;
+    return environment;
 }
 
 
-/** Lecture et écriture d'une matrice qui indique la position des sources de Chaleur
-		* @param adresse : adresse d'un fichier qui contient l'emplacement et les variations des sources de chaleur
-	  * @return domaine : sourceDeChall généré
+/** Lecture et ï¿½criture d'une matrix qui indique la position des sources de Chaleur
+		* @param adress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
+	  * @return environment : sourceDeChall gï¿½nï¿½rï¿½
 	  */
 
-int** Lire_Source_De_Chaleur(char *adresse){
+int** Read_Source_De_Chaleur(char *adress){
 
-    int **sourceDeChall=NULL;//sécurité
+    int **sourceDeChall=NULL;//sï¿½curitï¿½
     int x,y,i,j;
-    FILE* Ftxt=fopen(adresse,"r");//ouverture du fichier
+    FILE* Ftxt=fopen(adress,"r");//ouverture du fichier
     if(Ftxt != NULL){//test d'ouverture
-        fscanf(Ftxt,"%d %d",&x,&y);//on récupère les dimensions de la matrice à créer = dimensions du problème
+        fscanf(Ftxt,"%d %d",&x,&y);//on rï¿½cupï¿½re les dimensions de la matrix ï¿½ crï¿½er = dimensions du problï¿½me
 
-        sourceDeChall = Allocation_Tableau_int_2D(x,y); //création de la matrice sourceDeChall vide
+        sourceDeChall = Allocation_Tableau_int_2D(x,y); //crï¿½ation de la matrix sourceDeChall vide
 
         for(i=0; i<y; i++){
 
             for(j=0;j<x;j++){
-                if ( fscanf(Ftxt,"%d ",&(sourceDeChall[i][j])) )  {//remplit de données sur les sources la matrice
+                if ( fscanf(Ftxt,"%d ",&(sourceDeChall[i][j])) )  {//remplit de donnï¿½es sur les sources la matrix
                 }
                 else
                     printf("Erreur, les valeurs de sources de chaleur n'ont pas ete lue\n");
@@ -135,21 +135,21 @@ int** Lire_Source_De_Chaleur(char *adresse){
 }
 
 
-/** Lecture et création d'une liste de matériaux
-	  * @param adresse : adresse d'un fichier txt contenant les caractéristiques et noms des matériaux
-	  * @return mat : liste chainée contenant les nom et données des matériaux disponibles
+/** Lecture et crï¿½ation d'une liste de matï¿½riaux
+	  * @param adress : adress d'un fichier txt contenant les caractï¿½ristiques et noms des matï¿½riaux
+	  * @return mat : liste chainï¿½e contenant les nom et donnï¿½es des matï¿½riaux disponibles
 	  */
 
-ListeMateriaux Lire_Materiaux(char* adresse){
+Materials_List Read_Materiaux(char* adress){
     Materiau element;
 
-    ListeMateriaux mat=Creer_Materiaux();
+    Materials_List mat=Create_Materiaux();
 
-    FILE* fTxt=fopen(adresse,"r"); //ouverture
+    FILE* fTxt=fopen(adress,"r"); //ouverture
     if(fTxt != NULL){ //test d'ouverture
-        while(fscanf(fTxt,"%lf %lf %lf",&(element.K),&(element.C),&(element.rho))==3 ){ //Lecture des caractéristiques des materiaux
+        while(fscanf(fTxt,"%lf %lf %lf",&(element.K),&(element.C),&(element.rho))==3 ){ //Lecture des caractï¿½ristiques des materials
 
-            fscanf(fTxt,"%s",&(element.Nom)); //Lecture des noms des materiaux
+            fscanf(fTxt,"%s",&(element.Nom)); //Lecture des noms des materials
 
             element.alpha = (element.K)/(element.rho * element.C); //calcul de alpha
 
@@ -157,19 +157,19 @@ ListeMateriaux Lire_Materiaux(char* adresse){
         }
         fclose(fTxt);//fermeture du fichier
     } else {
-    printf("Erreur, le fichier de Materiaux n'a pas été ouvert \n") ;
+    printf("Erreur, le fichier de Materiaux n'a pas ï¿½tï¿½ ouvert \n") ;
     }
 
     return mat;
 }
 
 
-/** Création d'une liste de matériaux vide
-	  * @return mat : liste générée
+/** Crï¿½ation d'une liste de matï¿½riaux vide
+	  * @return mat : liste gï¿½nï¿½rï¿½e
 	  */
 
-ListeMateriaux Creer_Materiaux(){
-    ListeMateriaux mat;
+Materials_List Create_Materiaux(){
+    Materials_List mat;
 
     mat.Elements = creerListe(sizeof(Materiau));
 
@@ -177,89 +177,89 @@ ListeMateriaux Creer_Materiaux(){
 }
 
 
-/** Suppression d'une liste de matériaux
-		* @param mat : liste à supprimer
+/** Suppression d'une liste de matï¿½riaux
+		* @param mat : liste ï¿½ supprimer
 	  */
 
-void Liberer_ListeMateriaux(ListeMateriaux *mat){
+void Free_Materials_List(Materials_List *mat){
     freeListe(mat->Elements);
-    mat->Elements=NULL;//sécurité
+    mat->Elements=NULL;//sï¿½curitï¿½
 }
 
 
-/** Création d'une matrice d'entier vide
+/** Crï¿½ation d'une matrix d'entier vide
 	  * @param x : nombre de colonne
 	  * @param y : nombre de ligne
-	  * @return matrice généré
+	  * @return matrix gï¿½nï¿½rï¿½
 	  */
 
 int** Allocation_Tableau_int_2D(int x,int y){
 
-    int **matrice=NULL;//sécurité
-    matrice=calloc(y, sizeof( int* )); //création du vecteur de pointeur
+    int **matrix=NULL;//sï¿½curitï¿½
+    matrix=calloc(y, sizeof( int* )); //crï¿½ation du vecteur de pointeur
     for(int i=0;i<y;i++)
-        matrice[i]=calloc(x, sizeof( int )); //création des vecteurs d'entier
-    return matrice;
+        matrix[i]=calloc(x, sizeof( int )); //crï¿½ation des vecteurs d'entier
+    return matrix;
 }
 
 
-/** Création d'une matrice de type double vide
+/** Crï¿½ation d'une matrix de type double vide
 	  * @param x : nombre de colonne
 	  * @param y : nombre de ligne
-	  * @return matrice généré
+	  * @return matrix gï¿½nï¿½rï¿½
 	  */
 
 double** Allocation_Tableau_double_2D(int x,int y){
-    double **matrice=NULL;//sécurité
-    matrice=calloc(y, sizeof( double* )); //création du vecteur de pointeur
+    double **matrix=NULL;//sï¿½curitï¿½
+    matrix=calloc(y, sizeof( double* )); //crï¿½ation du vecteur de pointeur
     for(int i=0;i<y;i++)
-        matrice[i]=calloc(x, sizeof( double )); //créationdes des vecteurs d'entier
-    return matrice;
+        matrix[i]=calloc(x, sizeof( double )); //crï¿½ationdes des vecteurs d'entier
+    return matrix;
 }
 
 
 /** Suppression d'un tableau
-	  * @param matrice : matrice à supprimer
-	  * @param y : taille de la matrice à supprimer
+	  * @param matrix : matrix ï¿½ supprimer
+	  * @param y : taille de la matrix ï¿½ supprimer
 	  */
 
-void Liberer_Tableau(void **matrice,int y){
+void Free_Table(void **matrix,int y){
     for(int i=0;i<y;i++){
-        free(matrice[i]);
+        free(matrix[i]);
     }
-    free(matrice);
-    matrice=NULL;//sécurité
+    free(matrix);
+    matrix=NULL;//sï¿½curitï¿½
 }
 
 
-/** Lecture et écriture d'une matrice contenant les types de matériaux
-	  * @param adresse_Typ_Mat : adresse d'un fichier ui contient les nombres qui correspondent à différents types de matériaux
-	  * @param length : nombre de matériau disponible
+/** Lecture et ï¿½criture d'une matrix contenant les types de matï¿½riaux
+	  * @param materialsTypesAdress : adress d'un fichier ui contient les nombres qui correspondent ï¿½ diffï¿½rents types de matï¿½riaux
+	  * @param length : nombre de matï¿½riau disponible
 	  * @param x : nombre de colonne
 	  * @param y : nombre de ligne
 	  * @return
 	  */
 
-int** Lire_TypeMat(char* adresse_Typ_Mat,int length,int *x,int *y){
-    int** Type_Mat=NULL; //sécurité
+int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y){
+    int** Type_Mat=NULL; //sï¿½curitï¿½
     int i=0,j=0;
     int A;
 
-    FILE* ftxt=fopen(adresse_Typ_Mat,"r");//ouverture du fichier
+    FILE* ftxt=fopen(materialsTypesAdress,"r");//ouverture du fichier
     if(ftxt!=NULL){ //test d'ouverture
 
-        fscanf(ftxt,"%d %d",&i,&j); //récupère les dimensions du problème
+        fscanf(ftxt,"%d %d",&i,&j); //rï¿½cupï¿½re les dimensions du problï¿½me
         *x=i;*y=j;
-        Type_Mat=Allocation_Tableau_int_2D(i,j); //création de la matrice vide Type_Mat de taille i, j
+        Type_Mat=Allocation_Tableau_int_2D(i,j); //crï¿½ation de la matrix vide Type_Mat de taille i, j
         for(i=0;i<*y;i++){
             for(j=0;j<*x;j++){ //pour chaque point de l'espace
 
                 fscanf(ftxt,"%d",&A);
-                if(A<length){ //on vérifie que le matériau existe
-                    Type_Mat[i][j]=A; //on l'ajoute à Type_Mat
+                if(A<length){ //on vï¿½rifie que le matï¿½riau existe
+                    Type_Mat[i][j]=A; //on l'ajoute ï¿½ Type_Mat
                 }
                 else{
-                    printf("Materiaux non définie dans le fichier materiaux \n");
+                    printf("Materiaux non dï¿½finie dans le fichier materials \n");
                 }
             }
         }
@@ -273,62 +273,62 @@ int** Lire_TypeMat(char* adresse_Typ_Mat,int length,int *x,int *y){
 }
 
 
-/** Créer une matrice contenant tous les alphas de l'espace étudié
-	  * @param adresse_Typ_Mat : adresse d'un fichier ui contient les nombres qui correspondent à différents types de matériaux
-	  * @param materiaux : liste contenant les matériaux et leurs caractéristiques
-	  * @return alphaLocal : matrice réponse
+/** Crï¿½er une matrix contenant tous les alphas de l'espace ï¿½tudiï¿½
+	  * @param materialsTypesAdress : adress d'un fichier ui contient les nombres qui correspondent ï¿½ diffï¿½rents types de matï¿½riaux
+	  * @param materials : liste contenant les matï¿½riaux et leurs caractï¿½ristiques
+	  * @return localAlpha : matrix rï¿½ponse
 	  */
 
-double** Calcul_alpha(char *adresse_Typ_Mat,ListeMateriaux materiaux){
+double** Compute_alpha(char *materialsTypesAdress,Materials_List materials){
 
     int x,y;
-    int k= materiaux.Elements->length;
-    int** typeMat =Lire_TypeMat(adresse_Typ_Mat,k, &x, &y);//écriture de typeMat
+    int k= materials.Elements->length;
+    int** typeMat =Read_TypeMat(materialsTypesAdress,k, &x, &y);//ï¿½criture de typeMat
 
-    double** alphaLocal=Allocation_Tableau_double_2D(x,y); //création de la matrice alphaLocal
+    double** localAlpha=Allocation_Tableau_double_2D(x,y); //crï¿½ation de la matrix localAlpha
     int i=0,j=0;
     double* alphaMat=calloc(k,sizeof(double));
     Materiau elements;
-    ListeSC* chaine=materiaux.Elements;
+    ListeSC* chaine=materials.Elements;
 
-    for( chaine->current =  chaine->root; hasNext( chaine); getNext( chaine) ){//pour chaque élément de la liste de matériaux
+    for( chaine->current =  chaine->root; hasNext( chaine); getNext( chaine) ){//pour chaque ï¿½lï¿½ment de la liste de matï¿½riaux
         elements= * ((Materiau*) (chaine->current->data)) ;
-        alphaMat[j]=elements.alpha; //on remplit alphaMat des alphas en fonction des matériaux correspondant
+        alphaMat[j]=elements.alpha; //on remplit alphaMat des alphas en fonction des matï¿½riaux correspondant
         j++;
     }
 
     for(i=0;i<y;i++){
         for(j=0;j<x;j++) //pour chaque point de l'espace
-            alphaLocal[i][j]=alphaMat[typeMat[i][j]];//on remplit alphaLocal
+            localAlpha[i][j]=alphaMat[typeMat[i][j]];//on remplit localAlpha
     }
 
-    free(alphaMat); //libération de la mémoire
-    Liberer_Tableau((void**) typeMat,y); //libération de la mémoire
+    free(alphaMat); //libï¿½ration de la mï¿½moire
+    Free_Table((void**) typeMat,y); //libï¿½ration de la mï¿½moire
 
-    return alphaLocal;
+    return localAlpha;
 }
 
 
 /** Ajout ou supression de chaleur
-	  * @param adresse : adresse contenant les valeurs des températures des sources
-	  * @param chaleur : matrice à compléter
+	  * @param adress : adress contenant les valeurs des tempï¿½ratures des sources
+	  * @param chaleur : matrix ï¿½ complï¿½ter
 	  */
 
-void Lire_ChaleurVariable(char *adresse,double** chaleur){
+void Read_VariableHeat(char *adress,double** chaleur){
     int x,y,i,j;
     double A;
-    FILE*ftxt=fopen(adresse,"r");//ouverture du fichier
+    FILE*ftxt=fopen(adress,"r");//ouverture du fichier
     if(ftxt!=NULL){//test d'ouverture
-        fscanf(ftxt,"%d %d",&x,&y); //on récupère les dimensions du problème
+        fscanf(ftxt,"%d %d",&x,&y); //on rï¿½cupï¿½re les dimensions du problï¿½me
         for(i=0;i<y;i++){
-            for(j=0;j<x;j++){ //pour chaque point de l'espace étudié
+            for(j=0;j<x;j++){ //pour chaque point de l'espace ï¿½tudiï¿½
                 fscanf(ftxt,"%lf",&A);
-                chaleur[i][j]=A; //on modifie la température de la source au point i, j
+                chaleur[i][j]=A; //on modifie la tempï¿½rature de la source au point i, j
             }
 
         }
     fclose(ftxt);//fermeture du fichier
     }
     else
-        printf("erreur a l'ouverture du fichier de Chaleur Variable %s\n",adresse);
+        printf("erreur a l'ouverture du fichier de Chaleur Variable %s\n",adress);
 }

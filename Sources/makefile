@@ -1,5 +1,5 @@
 CC = gcc
-OBJ = Calculs.o Initialisation.o Util.o listeSC.o main.o 
+OBJ = Computation.o Initialisation.o Util.o listeSC.o main.o 
 DEBUG = 
 
 ifeq (yes,${DEBUG})
@@ -24,7 +24,7 @@ listeSC.o : listeSC.c
 Initialisation.o : Initialisation.c
 	${CC} ${CC_OPTIONS} -c $< -o $@
 
-Calculs.o : Calculs.c
+Computation.o : Computation.c
 	${CC} ${CC_OPTIONS} -c $< -o $@
 
 Util.o : Util.c
