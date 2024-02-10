@@ -7,14 +7,14 @@
     #define DECIMALE 10
     #define INHOMOGENEOUS2D "data/Results/Inhomogeneous"
     #define INHOMOGENEOUS1D "data/Results/Inhomogeneous.txt"
-    #define VARIABLE2D "data/VariableHeat/VariableHeat"
-    #define VARIABLE1D "data/VariableHeat.txt"
+    #define VARIABLEHEAT2D "data/VariableHeat/VariableHeat"
+    #define VARIABLEHEAT1D "data/VariableHeat.txt"
 
 
 /**Choisis le type du probleme (bi ou mono) en fonction de ses dimensuions
 	  * @param materialAdress : adress qui contient les caract�ristiques des mat�riaux
 	  * @param issueConditionAdress : adress d'un fichier qui contient les donn�es de la structure Issue_Condition
-	  * @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
+	  * @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de heat
 	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  */
 
@@ -46,7 +46,7 @@ void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress,
 }
 
 
-/** Mod�lisation de diffusion de chaleur dans un espace bidimensionnel ihonomog�ne
+/** Mod�lisation de diffusion de heat dans un espace bidimensionnel ihonomog�ne
 	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
 	  * @param directoryAdress : o� placer les fichiers r�ponses
 	  */
@@ -58,9 +58,9 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     double KG, KC, KD, KH, KB; //temperature aux points Gauche Centre Droite Haut Bas
     char adress[50];//vecteur d'adress de lecture et d'�criture de
     double Y,X,R;//Coefficient de l'�quation differentielle discr�tis�e
-    double **computation = Allocation_Tableau_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
+    double **computation = Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
     double *tmpData=calloc(init.Domaine_Init.Ny, sizeof( double ));//permet de sauvegarder nos temp�ratures pr�c�dentes
-    double** chaleur=Allocation_Tableau_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
+    double** heat=Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
 
     ConcatenationFichier2D(adress,directoryAdress,0); //Initialisation de l'adress des fichiers
     Initilisation_Computation2D(adress,init,computation); //On remplit les fichiers texte des dimensions du probl�me
@@ -70,9 +70,9 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     //     COMPUTATION    //
     for (j=1; j<=init.Domaine_Init.Nt; j++){
 
-        ConcatenationFichier2D(adress,VARIABLE2D,j); //R�initialisation de l'adress pour chaleur
+        ConcatenationFichier2D(adress,VARIABLEHEAT2D,j); //R�initialisation de l'adress pour heat
 
-        Read_VariableHeat(adress,chaleur); //On r�cup�re les nouvelles valeurs des sources de chaleur au temps j
+        Read_VariableHeat(adress,heat); //On r�cup�re les nouvelles valeurs des sources de heat au temps j
 
         ConcatenationFichier2D(adress,directoryAdress,j); //R�initialisation de l'adress pour placer les fichiers r�ponses de diffusion
 
@@ -103,7 +103,7 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
                     X=(KG+KD-2*KC)/(init.Domaine_Init.dx * init.Domaine_Init.dx);
 
                     R= init.Domaine_Init.dt * init.Domaine_Init.LocalAlpha[m][n];
-                    computation[m][n] = KC + (init.Domaine_Init.HeatSources[m][n] * R *(Y+X))+ chaleur[m][n];
+                    computation[m][n] = KC + (init.Domaine_Init.HeatSources[m][n] * R *(Y+X))+ heat[m][n];
 
                   	//R�initialisation des points de temp�ratures importantes
                     KG = KC;
@@ -133,12 +133,12 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     }//fin for j
 
     Free_Table((void**)computation,init.Domaine_Init.Ny);
-    Free_Table((void**)chaleur,init.Domaine_Init.Ny);
+    Free_Table((void**)heat,init.Domaine_Init.Ny);
     computation=NULL; //lib�ration de la m�moire
 }
 
 
-/** Mod�lisation de diffusion de chaleur dans un espace monodimensionnel ihonomog�ne
+/** Mod�lisation de diffusion de heat dans un espace monodimensionnel ihonomog�ne
 	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
 	  * @param adress : o� placer les fichiers r�ponses
 	  */
@@ -146,9 +146,9 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
 void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
     // -------------- //
     // INITIALISATION //
-    double** chaleur =Allocation_Tableau_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Nt); //cr�ation d'une matrice contenant les valeurs des sources de chaleur
+    double** heat =Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Nt); //cr�ation d'une matrice contenant les valeurs des sources de heat
 
-    Read_VariableHeat(VARIABLE1D,chaleur);//on remplit cette matrice
+    Read_VariableHeat(VARIABLEHEAT1D,heat);//on remplit cette matrice
 
     FILE*ftxt = fopen(adress, "w"); //fichier r�ponse
     if(ftxt != NULL){//test d'ouverture
@@ -170,7 +170,7 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
 
             for (n=1; n<(init.Domaine_Init.Nx-1); n++){
 
-                computation[n] = K1 + (init.Domaine_Init.HeatSources[0][n] *init.Domaine_Init.LocalAlpha[0][n] * s * (K0+K2-2*K1) )+ chaleur[j-1][n];
+                computation[n] = K1 + (init.Domaine_Init.HeatSources[0][n] *init.Domaine_Init.LocalAlpha[0][n] * s * (K0+K2-2*K1) )+ heat[j-1][n];
 
                 K0 = K1;//temperature aux points a-1, a, a+1
                 K1 = K2;
@@ -183,7 +183,7 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
 
         fclose(ftxt); //fermeture de fichier
 
-        Free_Table((void**)chaleur,init.Domaine_Init.Nt-1);
+        Free_Table((void**)heat,init.Domaine_Init.Nt-1);
         free(computation);
         computation=NULL; //lib�ration de la m�moire
     }

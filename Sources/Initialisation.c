@@ -17,7 +17,7 @@ Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition do
 
     Issue_Condition init;
     init.Domaine_Init=domain;
-    init.Temp_Init= Allocation_Tableau_double_2D(Nx,Ny);
+    init.Temp_Init= Allocate_Table_double_2D(Nx,Ny);
 
     return init;
 }
@@ -114,7 +114,7 @@ int** Read_Source_De_Chaleur(char *adress){
     if(Ftxt != NULL){//test d'ouverture
         fscanf(Ftxt,"%d %d",&x,&y);//on r�cup�re les dimensions de la matrix � cr�er = dimensions du probl�me
 
-        sourceDeChall = Allocation_Tableau_int_2D(x,y); //cr�ation de la matrix sourceDeChall vide
+        sourceDeChall = Allocate_Table_int_2D(x,y); //cr�ation de la matrix sourceDeChall vide
 
         for(i=0; i<y; i++){
 
@@ -193,7 +193,7 @@ void Free_Materials_List(Materials_List *mat){
 	  * @return matrix g�n�r�
 	  */
 
-int** Allocation_Tableau_int_2D(int x,int y){
+int** Allocate_Table_int_2D(int x,int y){
 
     int **matrix=NULL;//s�curit�
     matrix=calloc(y, sizeof( int* )); //cr�ation du vecteur de pointeur
@@ -209,7 +209,7 @@ int** Allocation_Tableau_int_2D(int x,int y){
 	  * @return matrix g�n�r�
 	  */
 
-double** Allocation_Tableau_double_2D(int x,int y){
+double** Allocate_Table_double_2D(int x,int y){
     double **matrix=NULL;//s�curit�
     matrix=calloc(y, sizeof( double* )); //cr�ation du vecteur de pointeur
     for(int i=0;i<y;i++)
@@ -250,7 +250,7 @@ int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y){
 
         fscanf(ftxt,"%d %d",&i,&j); //r�cup�re les dimensions du probl�me
         *x=i;*y=j;
-        Type_Mat=Allocation_Tableau_int_2D(i,j); //cr�ation de la matrix vide Type_Mat de taille i, j
+        Type_Mat=Allocate_Table_int_2D(i,j); //cr�ation de la matrix vide Type_Mat de taille i, j
         for(i=0;i<*y;i++){
             for(j=0;j<*x;j++){ //pour chaque point de l'espace
 
@@ -285,7 +285,7 @@ double** Compute_alpha(char *materialsTypesAdress,Materials_List materials){
     int k= materials.Elements->length;
     int** typeMat =Read_TypeMat(materialsTypesAdress,k, &x, &y);//�criture de typeMat
 
-    double** localAlpha=Allocation_Tableau_double_2D(x,y); //cr�ation de la matrix localAlpha
+    double** localAlpha=Allocate_Table_double_2D(x,y); //cr�ation de la matrix localAlpha
     int i=0,j=0;
     double* alphaMat=calloc(k,sizeof(double));
     Materiau elements;

@@ -18,9 +18,9 @@ Materials_List Read_Materiaux(char* adresse);//Fonction de lecture du fichier de
 
 void Free_Materials_List(Materials_List *mat);//liberation la m�moire allou� dynamiquement
 
-int** Allocation_Tableau_int_2D(int x,int y);//Alocation dynamique d'une matrice d'entier
+int** Allocate_Table_int_2D(int x,int y);//Alocation dynamique d'une matrice d'entier
 
-double** Allocation_Tableau_double_2D(int x,int y);//Alocation dynamique d'une matrice de r�elle
+double** Allocate_Table_double_2D(int x,int y);//Alocation dynamique d'une matrice de r�elle
 
 void Free_Table(void **matrice,int y);//Lib�ration de la m�moire allou�e pour une matrice
 
