@@ -35,9 +35,9 @@ void Free_Issue_Condition(Issue_Condition *init){
 
 
 /** Lecture et �criture des conditions du probl�me
-	  * @param adress : adress d'un fichier qui contient les donn�es de la structure Issue_Condition
-		* @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
-	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
+	  * @param adress : adress d'un file qui contient les donn�es de la structure Issue_Condition
+		* @param heatSourcesAdress : adress d'un file qui contient l'emplacement et les variations des sources de chaleur
+	  * @param materialsTypesAdress : adress qd'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  * @param materials : liste contenant les mat�riaux et leurs caract�ristiques
 	  * @return init : Issue_Condition g�n�r�
 	  */
@@ -52,7 +52,7 @@ Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char
     int Nx,Ny,Nt,i,j;
 
 
-    FILE* fTxt=fopen(adress,"r"); //ouverture du fichier
+    FILE* fTxt=fopen(adress,"r"); //ouverture du file
     if(fTxt != NULL){
         if(fscanf(fTxt,"%lf %d %lf %d %lf %d",&x,&Nx,&y,&Ny,&t,&Nt)==6 ){ //Lecture et stockage des conditions initiales
             init = Create_Issue_Condition(Nx,Ny,domain); //cr�ation de la structure des conditions initiales
@@ -74,18 +74,18 @@ Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char
         else
             printf("Erreur, les param�tres d'initialisation n'ont pas �t� lue\n");
 
-        fclose(fTxt); //fermeture du fichier
+        fclose(fTxt); //fermeture du file
         }
     else
-        printf("Erreur, le fichier d'initialisation n'a pas �t� ouvert\n") ;
+        printf("Erreur, le file d'initialisation n'a pas �t� ouvert\n") ;
 
     return init;
 }
 
 
 /** Lecture et �criture des donn�es du environment d'�tude
-		* @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
-	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
+		* @param heatSourcesAdress : adress d'un file qui contient l'emplacement et les variations des sources de chaleur
+	  * @param materialsTypesAdress : adress qd'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  * @param materials : liste contenant les mat�riaux et leurs caract�ristiques
 	  * @return environment : Environment_Definition g�n�r�
 	  */
@@ -102,7 +102,7 @@ Environment_Definition Read_Environment_Definition(char* heatSourcesAdress,char*
 
 
 /** Lecture et �criture d'une matrix qui indique la position des sources de Chaleur
-		* @param adress : adress d'un fichier qui contient l'emplacement et les variations des sources de chaleur
+		* @param adress : adress d'un file qui contient l'emplacement et les variations des sources de chaleur
 	  * @return environment : sourceDeChall g�n�r�
 	  */
 
@@ -110,7 +110,7 @@ int** Read_Source_De_Chaleur(char *adress){
 
     int **sourceDeChall=NULL;//s�curit�
     int x,y,i,j;
-    FILE* Ftxt=fopen(adress,"r");//ouverture du fichier
+    FILE* Ftxt=fopen(adress,"r");//ouverture du file
     if(Ftxt != NULL){//test d'ouverture
         fscanf(Ftxt,"%d %d",&x,&y);//on r�cup�re les dimensions de la matrix � cr�er = dimensions du probl�me
 
@@ -126,17 +126,17 @@ int** Read_Source_De_Chaleur(char *adress){
             }
         }
 
-        fclose(Ftxt); //fermeture du fichier
+        fclose(Ftxt); //fermeture du file
     }
     else
-        printf("Erreur, le fichier des sources de chaleur n'a pas ete ouvert\n") ;
+        printf("Erreur, le file des sources de chaleur n'a pas ete ouvert\n") ;
 
     return sourceDeChall;
 }
 
 
 /** Lecture et cr�ation d'une liste de mat�riaux
-	  * @param adress : adress d'un fichier txt contenant les caract�ristiques et noms des mat�riaux
+	  * @param adress : adress d'un file txt contenant les caract�ristiques et noms des mat�riaux
 	  * @return mat : liste chain�e contenant les nom et donn�es des mat�riaux disponibles
 	  */
 
@@ -155,9 +155,9 @@ Materials_List Read_Materiaux(char* adress){
 
             ajout(mat.Elements, &element, 2); //Ajout a la liste mat
         }
-        fclose(fTxt);//fermeture du fichier
+        fclose(fTxt);//fermeture du file
     } else {
-    printf("Erreur, le fichier de Materiaux n'a pas �t� ouvert \n") ;
+    printf("Erreur, le file de Materiaux n'a pas �t� ouvert \n") ;
     }
 
     return mat;
@@ -233,7 +233,7 @@ void Free_Table(void **matrix,int y){
 
 
 /** Lecture et �criture d'une matrix contenant les types de mat�riaux
-	  * @param materialsTypesAdress : adress d'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
+	  * @param materialsTypesAdress : adress d'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  * @param length : nombre de mat�riau disponible
 	  * @param x : nombre de colonne
 	  * @param y : nombre de ligne
@@ -245,7 +245,7 @@ int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y){
     int i=0,j=0;
     int A;
 
-    FILE* ftxt=fopen(materialsTypesAdress,"r");//ouverture du fichier
+    FILE* ftxt=fopen(materialsTypesAdress,"r");//ouverture du file
     if(ftxt!=NULL){ //test d'ouverture
 
         fscanf(ftxt,"%d %d",&i,&j); //r�cup�re les dimensions du probl�me
@@ -259,14 +259,14 @@ int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y){
                     Type_Mat[i][j]=A; //on l'ajoute � Type_Mat
                 }
                 else{
-                    printf("Materiaux non d�finie dans le fichier materials \n");
+                    printf("Materiaux non d�finie dans le file materials \n");
                 }
             }
         }
-        fclose(ftxt); //fermeture du fichier
+        fclose(ftxt); //fermeture du file
     }
     else
-        printf("erreur a l'ouverture de fichier TypesDeMateriaux \n");
+        printf("erreur a l'ouverture de file TypesDeMateriaux \n");
 
 
     return Type_Mat;
@@ -274,7 +274,7 @@ int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y){
 
 
 /** Cr�er une matrix contenant tous les alphas de l'espace �tudi�
-	  * @param materialsTypesAdress : adress d'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
+	  * @param materialsTypesAdress : adress d'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  * @param materials : liste contenant les mat�riaux et leurs caract�ristiques
 	  * @return localAlpha : matrix r�ponse
 	  */
@@ -317,7 +317,7 @@ double** Compute_alpha(char *materialsTypesAdress,Materials_List materials){
 void Read_VariableHeat(char *adress,double** chaleur){
     int x,y,i,j;
     double A;
-    FILE*ftxt=fopen(adress,"r");//ouverture du fichier
+    FILE*ftxt=fopen(adress,"r");//ouverture du file
     if(ftxt!=NULL){//test d'ouverture
         fscanf(ftxt,"%d %d",&x,&y); //on r�cup�re les dimensions du probl�me
         for(i=0;i<y;i++){
@@ -327,8 +327,8 @@ void Read_VariableHeat(char *adress,double** chaleur){
             }
 
         }
-    fclose(ftxt);//fermeture du fichier
+    fclose(ftxt);//fermeture du file
     }
     else
-        printf("erreur a l'ouverture du fichier de Chaleur Variable %s\n",adress);
+        printf("erreur a l'ouverture du file de Chaleur Variable %s\n",adress);
 }

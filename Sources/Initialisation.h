@@ -14,7 +14,7 @@ void Free_Issue_Condition(Issue_Condition *init); //Lib�ration de la m�moire
 
 Materials_List Create_Materiaux(); //Cr�e une liste chain�e vide de materials
 
-Materials_List Read_Materiaux(char* adresse);//Fonction de lecture du fichier de materials pour les enregistrer dans une liste chain�e
+Materials_List Read_Materiaux(char* adresse);//Fonction de lecture du file de materials pour les enregistrer dans une liste chain�e
 
 void Free_Materials_List(Materials_List *mat);//liberation la m�moire allou� dynamiquement
 
@@ -24,14 +24,14 @@ double** Allocate_Table_double_2D(int x,int y);//Alocation dynamique d'une matri
 
 void Free_Table(void **matrice,int y);//Lib�ration de la m�moire allou�e pour une matrice
 
-Environment_Definition Read_Environment_Definition(char* heatSourcesAdress,char* materialsTypesAdress,Materials_List materials);//lecture des fichier de la structure de d�finition de environment
+Environment_Definition Read_Environment_Definition(char* heatSourcesAdress,char* materialsTypesAdress,Materials_List materials);//lecture des file de la structure de d�finition de environment
 
-int** Read_Source_De_Chaleur(char *adresse);//Lecture du fichier de source de chaleur
+int** Read_Source_De_Chaleur(char *adresse);//Lecture du file de source de chaleur
 
-int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y);//Lecture du fichier de type de materials
+int** Read_TypeMat(char* materialsTypesAdress,int length,int *x,int *y);//Lecture du file de type de materials
 
 double** Compute_alpha(char *materialsTypesAdress,Materials_List materials);//D�t�rmination de la valleur local du coefficient alpha
 
-void Read_VariableHeat(char *adresse,double** chaleur);//Lecture du fichier challeur variable
+void Read_VariableHeat(char *adresse,double** chaleur);//Lecture du file challeur variable
 
 #endif

@@ -13,9 +13,9 @@
 
 /**Choisis le type du probleme (bi ou mono) en fonction de ses dimensuions
 	  * @param materialAdress : adress qui contient les caract�ristiques des mat�riaux
-	  * @param issueConditionAdress : adress d'un fichier qui contient les donn�es de la structure Issue_Condition
-	  * @param heatSourcesAdress : adress d'un fichier qui contient l'emplacement et les variations des sources de heat
-	  * @param materialsTypesAdress : adress qd'un fichier ui contient les nombres qui correspondent � diff�rents types de mat�riaux
+	  * @param issueConditionAdress : adress d'un file qui contient les donn�es de la structure Issue_Condition
+	  * @param heatSourcesAdress : adress d'un file qui contient l'emplacement et les variations des sources de heat
+	  * @param materialsTypesAdress : adress qd'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  */
 
 void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress, char* heatSourcesAdress,char *materialsTypesAdress){
@@ -48,7 +48,7 @@ void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress,
 
 /** Mod�lisation de diffusion de heat dans un espace bidimensionnel ihonomog�ne
 	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
-	  * @param directoryAdress : o� placer les fichiers r�ponses
+	  * @param directoryAdress : o� placer les files r�ponses
 	  */
 
 void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
@@ -62,21 +62,21 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     double *tmpData=calloc(init.Domaine_Init.Ny, sizeof( double ));//permet de sauvegarder nos temp�ratures pr�c�dentes
     double** heat=Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
 
-    ConcatenationFichier2D(adress,directoryAdress,0); //Initialisation de l'adress des fichiers
-    Initilisation_Computation2D(adress,init,computation); //On remplit les fichiers texte des dimensions du probl�me
+    ConcatenationFile2D(adress,directoryAdress,0); //Initialisation de l'adress des files
+    Initilisation_Computation2D(adress,init,computation); //On remplit les files texte des dimensions du probl�me
 
 
     // ------------------ //
     //     COMPUTATION    //
     for (j=1; j<=init.Domaine_Init.Nt; j++){
 
-        ConcatenationFichier2D(adress,VARIABLEHEAT2D,j); //R�initialisation de l'adress pour heat
+        ConcatenationFile2D(adress,VARIABLEHEAT2D,j); //R�initialisation de l'adress pour heat
 
         Read_VariableHeat(adress,heat); //On r�cup�re les nouvelles valeurs des sources de heat au temps j
 
-        ConcatenationFichier2D(adress,directoryAdress,j); //R�initialisation de l'adress pour placer les fichiers r�ponses de diffusion
+        ConcatenationFile2D(adress,directoryAdress,j); //R�initialisation de l'adress pour placer les files r�ponses de diffusion
 
-        FILE*FTXT = fopen(adress, "w"); //fichier r�ponse
+        FILE*FTXT = fopen(adress, "w"); //file r�ponse
         if(FTXT != NULL){//test d'ouverture
 
             fprintf( FTXT, "%d %d ",init.Domaine_Init.Nx,init.Domaine_Init.Ny);//Dimension de la matrice de solution [X,Y]
@@ -125,10 +125,10 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
             for(i=0;i<init.Domaine_Init.Nx;i++)
                 fprintf(FTXT,"%lf\t",computation[init.Domaine_Init.Ny-1][i]); //On �crit Tb, temp�rature � l'autre bord
 
-            fclose(FTXT); //fermeture de fichier
+            fclose(FTXT); //fermeture de file
 
         }else
-        printf("Erreur a l'ouverture du fichier de Resultat : %s \n",adress);
+        printf("Erreur a l'ouverture du file de Resultat : %s \n",adress);
 
     }//fin for j
 
@@ -140,7 +140,7 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
 
 /** Mod�lisation de diffusion de heat dans un espace monodimensionnel ihonomog�ne
 	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
-	  * @param adress : o� placer les fichiers r�ponses
+	  * @param adress : o� placer les files r�ponses
 	  */
 
 void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
@@ -150,7 +150,7 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
 
     Read_VariableHeat(VARIABLEHEAT1D,heat);//on remplit cette matrice
 
-    FILE*ftxt = fopen(adress, "w"); //fichier r�ponse
+    FILE*ftxt = fopen(adress, "w"); //file r�ponse
     if(ftxt != NULL){//test d'ouverture
 
         int n, j; //indice spatial et temporel
@@ -181,19 +181,19 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
         fprintf(ftxt,"%lf \n",computation[init.Domaine_Init.Nx-1]); //derniere colone Tb
         } //fin for n
 
-        fclose(ftxt); //fermeture de fichier
+        fclose(ftxt); //fermeture de file
 
         Free_Table((void**)heat,init.Domaine_Init.Nt-1);
         free(computation);
         computation=NULL; //lib�ration de la m�moire
     }
     else
-        printf("Erreur a l'ouverture du fichier de Resultat \n");
+        printf("Erreur a l'ouverture du file de Resultat \n");
 }
 
 
-/**Ecriture des dimensions et des temp�ratures initiales du probl�me monodimensionnel dans un fichier txt
-	  * @param ftxt : fichier texte � initialiser
+/**Ecriture des dimensions et des temp�ratures initiales du probl�me monodimensionnel dans un file txt
+	  * @param ftxt : file texte � initialiser
 	  * @param init : Issue_Condition
 	  * @param computation : vecteur 1D contenant les valeurs de la simulation
 	  */
@@ -212,20 +212,20 @@ void InitialisationTXT1D(FILE*ftxt,Issue_Condition init,double *computation){
 
         for (n=0; n<init.Domaine_Init.Nx; n++){
             computation[n]=init.Temp_Init[0][n];//On r�cup�re les temp�ratures initiales
-            fprintf( ftxt,"%lf\t", computation[n]);//On les �crit dans le fichier ftxt
+            fprintf( ftxt,"%lf\t", computation[n]);//On les �crit dans le file ftxt
         }
 
         fprintf(ftxt,"\n");
 }
 
 
-/**Initilisation de l'adress d'un fichier
-	  * @param adress : adress du fichier � concat�ner
-	  * @param racine : d�but adress o� placer les fichiers � concat�ner
-	  * @param  i : num�ro du fichier
+/**Initilisation de l'adress d'un file
+	  * @param adress : adress du file � concat�ner
+	  * @param racine : d�but adress o� placer les files � concat�ner
+	  * @param  i : num�ro du file
 	  */
 
-void ConcatenationFichier2D(char *adress,const char* racine,int i){
+void ConcatenationFile2D(char *adress,const char* racine,int i){
     char nombre[50];
     strcpy(adress, racine);//copie racine � la suite d'adress
     itoa(i,nombre,DECIMALE);
@@ -235,8 +235,8 @@ void ConcatenationFichier2D(char *adress,const char* racine,int i){
 }
 
 
-/**Ecriture des dimensions et temp�ratures initiales du probl�me bidimensionnel dans un fichier txt
-	  * @param adress : fichier texte � initialiser
+/**Ecriture des dimensions et temp�ratures initiales du probl�me bidimensionnel dans un file txt
+	  * @param adress : file texte � initialiser
 	  * @param init : Issue_Condition
 	  * @param computation : matrice contenant les valeurs de la simulation
 	  */
@@ -244,7 +244,7 @@ void ConcatenationFichier2D(char *adress,const char* racine,int i){
 void Initilisation_Computation2D(char* adress,Issue_Condition init,double **computation){
     int n,m;
 
-    FILE*ftxt = fopen(adress, "w"); //fichier r�ponse
+    FILE*ftxt = fopen(adress, "w"); //file r�ponse
     if(ftxt != NULL){//test d'ouverture
         fprintf( ftxt, "%d\t%d\t%d\n",init.Domaine_Init.Nx,init.Domaine_Init.Ny,init.Domaine_Init.Nt);//Dimension de la matrice de solution [X,Y]
 
@@ -261,14 +261,14 @@ void Initilisation_Computation2D(char* adress,Issue_Condition init,double **comp
         for(m=0; m<init.Domaine_Init.Ny; m++){
             for (n=0; n<init.Domaine_Init.Nx; n++){
                 computation[m][n]=init.Temp_Init[m][n]; //On r�cup�re les temp�ratures initiales
-                fprintf( ftxt,"%lf\t", computation[m][n]); //On les �crit dans le fichier ftxt
+                fprintf( ftxt,"%lf\t", computation[m][n]); //On les �crit dans le file ftxt
             }
         fprintf(ftxt,"\n");
         }
-    fclose(ftxt);//fermeture du fichier
+    fclose(ftxt);//fermeture du file
     }
     else
-        printf("Erreur a l'ouverture du fichier de Resultat : %s \n",adress);
+        printf("Erreur a l'ouverture du file de Resultat : %s \n",adress);
 
 }
 
