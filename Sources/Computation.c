@@ -1,33 +1,36 @@
 #include "Computation.h"
 
-    #include "Initialisation.h"
+    #include "Initialization.h"
     #include "listeSC.h"
 
     #define TXT ".txt"
+    #define BIN ".bin"
     #define DECIMALE 10
     #define INHOMOGENEOUS2D "data/Results/Inhomogeneous"
-    #define INHOMOGENEOUS1D "data/Results/Inhomogeneous.txt"
+    #define INHOMOGENEOUS1D "data/Results/Inhomogeneous"
     #define VARIABLEHEAT2D "data/VariableHeat/VariableHeat"
     #define VARIABLEHEAT1D "data/VariableHeat.txt"
+    #define BINARYFILES 0
 
 
 /**Choisis le type du probleme (bi ou mono) en fonction de ses dimensuions
 	  * @param materialAdress : adress qui contient les caract�ristiques des mat�riaux
-	  * @param issueConditionAdress : adress d'un file qui contient les donn�es de la structure Issue_Condition
+	  * @param problemConditionAdress : adress d'un file qui contient les donn�es de la structure Problem_Condition
 	  * @param heatSourcesAdress : adress d'un file qui contient l'emplacement et les variations des sources de heat
 	  * @param materialsTypesAdress : adress qd'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  */
 
-void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress, char* heatSourcesAdress,char *materialsTypesAdress){
+void InhomogeneousEnvironments(char* materialAdress, char* problemConditionAdress, char* heatSourcesAdress,char *materialsTypesAdress){
 
     Materials_List materiaux = Read_Materiaux(materialAdress);//On r�cup�re les caract�ristiques de tous les mat�riaux dans une liste chain�e
-    Issue_Condition init = Read_Issue_Condition(issueConditionAdress ,heatSourcesAdress, materialsTypesAdress,materiaux);  //On r�cup�re toutes les donn�es de conditions des probl�mes
+    Problem_Condition init = Read_Problem_Condition(problemConditionAdress ,heatSourcesAdress, materialsTypesAdress,materiaux);  //On r�cup�re toutes les donn�es de conditions des probl�mes
 
     if(init.Domaine_Init.Nx>2){
         switch(init.Domaine_Init.Ny){
 
             case 1: //pour Ny = 1
-                ComputationInhomogeneous1D(init ,INHOMOGENEOUS1D);
+                char adress[100] = INHOMOGENEOUS1D;
+                ComputationInhomogeneous1D(init ,adress);
             break;
 
             case 2: //pour Ny = 2
@@ -41,19 +44,19 @@ void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress,
     else
         printf("erreur il doit y avoir plus de 2 echantillons en x \n");
 
-    Free_Issue_Condition(&init);
+    Free_Problem_Condition(&init);
     Free_Materials_List(&materiaux);//lib�ration de la m�moire
 }
 
 
 /** Mod�lisation de diffusion de heat dans un espace bidimensionnel ihonomog�ne
-	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
+	  * @param init : Problem_Condition avec donn�es du probl�me � r�soudre
 	  * @param directoryAdress : o� placer les files r�ponses
 	  */
 
-void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
+void ComputationInhomogeneous2D(Problem_Condition init,char* directoryAdress) {
     // -------------- //
-    // INITIALISATION //
+    // INITIALIZATION //
     int n, j, m, i; //indice spatial et temporel
     double KG, KC, KD, KH, KB; //temperature aux points Gauche Centre Droite Haut Bas
     char adress[50];//vecteur d'adress de lecture et d'�criture de
@@ -62,7 +65,7 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     double *tmpData=calloc(init.Domaine_Init.Ny, sizeof( double ));//permet de sauvegarder nos temp�ratures pr�c�dentes
     double** heat=Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Ny);
 
-    ConcatenationFile2D(adress,directoryAdress,0); //Initialisation de l'adress des files
+    ConcatenationFile2D(adress,directoryAdress,0); //Initialization de l'adress des files
     Initilisation_Computation2D(adress,init,computation); //On remplit les files texte des dimensions du probl�me
 
 
@@ -70,11 +73,11 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
     //     COMPUTATION    //
     for (j=1; j<=init.Domaine_Init.Nt; j++){
 
-        ConcatenationFile2D(adress,VARIABLEHEAT2D,j); //R�initialisation de l'adress pour heat
+        ConcatenationFile2D(adress,VARIABLEHEAT2D,j); //R�initialization de l'adress pour heat
 
         Read_VariableHeat(adress,heat); //On r�cup�re les nouvelles valeurs des sources de heat au temps j
 
-        ConcatenationFile2D(adress,directoryAdress,j); //R�initialisation de l'adress pour placer les files r�ponses de diffusion
+        ConcatenationFile2D(adress,directoryAdress,j); //R�initialization de l'adress pour placer les files r�ponses de diffusion
 
         FILE*FTXT = fopen(adress, "w"); //file r�ponse
         if(FTXT != NULL){//test d'ouverture
@@ -92,7 +95,7 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
 
                 fprintf(FTXT,"%lf\t",computation[m][0]);
 
-                //R�initialisation des valeurs de temp�ratures aux points importants
+                //R�initialization des valeurs de temp�ratures aux points importants
                 										    KH = tmpData[1];
                 KG = computation[m][0]; KC = computation[m][1]  ;KD = computation[m][2];
                											    KB = computation[m+1][1];
@@ -105,7 +108,7 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
                     R= init.Domaine_Init.dt * init.Domaine_Init.LocalAlpha[m][n];
                     computation[m][n] = KC + (init.Domaine_Init.HeatSources[m][n] * R *(Y+X))+ heat[m][n];
 
-                  	//R�initialisation des points de temp�ratures importantes
+                  	//R�initialization des points de temp�ratures importantes
                     KG = KC;
                     KC = KD;
                     KD = computation[m][n+2];
@@ -138,20 +141,29 @@ void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress) {
 }
 
 
-/** Mod�lisation de diffusion de heat dans un espace monodimensionnel ihonomog�ne
-	  * @param init : Issue_Condition avec donn�es du probl�me � r�soudre
-	  * @param adress : o� placer les files r�ponses
+/** Modeling of heat diffusion in a one-dimensional inhomogeneous space.
+	  * @param init : Problem_Condition containing problem data 
+	  * @param adress : output file adress
 	  */
 
-void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
+void ComputationInhomogeneous1D(Problem_Condition init ,char* adress){
     // -------------- //
-    // INITIALISATION //
-    double** heat =Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Nt); //cr�ation d'une matrice contenant les valeurs des sources de heat
+    // INITIALIZATION //
+    double** heat =Allocate_Table_double_2D(init.Domaine_Init.Nx,init.Domaine_Init.Nt); //Creating a matrix containing heat source values
 
-    Read_VariableHeat(VARIABLEHEAT1D,heat);//on remplit cette matrice
+    Read_VariableHeat(VARIABLEHEAT1D,heat);//Filing the above matrix with data contained in the file
 
-    FILE*ftxt = fopen(adress, "w"); //file r�ponse
-    if(ftxt != NULL){//test d'ouverture
+    FILE*file;
+
+    if(BINARYFILES) {
+      strcat(adress,BIN); file = fopen(adress, "wb"); //Results file 
+    }
+    else{
+      strcat(adress,TXT); file = fopen(adress, "w"); //Results file 
+    }
+
+
+    if(file != NULL){//test d'ouverture
 
         int n, j; //indice spatial et temporel
         double K0, K1, K2; //temperature aux points a-1, a, a+1
@@ -160,12 +172,22 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
 
         double *computation = calloc(init.Domaine_Init.Nx, sizeof( double )); //Vecteur 1D contenant les valeurs de la simulation
         //taille variable selon le nombre d'�chantillon
-        InitialisationTXT1D(ftxt, init, computation);
+
+        if(BINARYFILES) 
+          InitializationBIN1D(file, init, computation);
+        else
+          InitializationTXT1D(file, init, computation);
 
         // ------------------ //
         //     COMPUTATION    //
         for (j=1; j<=init.Domaine_Init.Nt; j++){
-            fprintf(ftxt,"%lf\t%lf\t",init.Domaine_Init.dt*j,computation[0]);//colonne 1 temps colonne 2 Ta
+          double time = init.Domaine_Init.dt*j;
+
+          if(BINARYFILES) 
+            fwrite(&time,sizeof(double),1,file); 
+          else
+            fprintf(file,"%lf\t%lf\t",time,computation[0]);//colonne 1 temps colonne 2 Ta
+
             K0 = computation[0]; K1 = computation[1]; K2 = computation[2];//temperature aux points a-1, a, a+1
 
             for (n=1; n<(init.Domaine_Init.Nx-1); n++){
@@ -175,13 +197,18 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
                 K0 = K1;//temperature aux points a-1, a, a+1
                 K1 = K2;
                 K2 = computation[n+2];
-                fprintf( ftxt,"%lf\t", computation[n]); //enregistrement des donn�es
+                if(!BINARYFILES)
+                fprintf( file,"%lf\t", computation[n]); //enregistrement des donn�es
 
             }//fin for j
-        fprintf(ftxt,"%lf \n",computation[init.Domaine_Init.Nx-1]); //derniere colone Tb
+            
+            if(BINARYFILES)
+              fwrite(&computation, sizeof(double), init.Domaine_Init.Nx, file);
+            else
+              fprintf(file,"%lf \n",computation[init.Domaine_Init.Nx-1]); //derniere colone Tb
         } //fin for n
 
-        fclose(ftxt); //fermeture de file
+        fclose(file); //fermeture de file
 
         Free_Table((void**)heat,init.Domaine_Init.Nt-1);
         free(computation);
@@ -194,11 +221,11 @@ void ComputationInhomogeneous1D(Issue_Condition init ,char* adress){
 
 /**Ecriture des dimensions et des temp�ratures initiales du probl�me monodimensionnel dans un file txt
 	  * @param ftxt : file texte � initialiser
-	  * @param init : Issue_Condition
+	  * @param init : Problem_Condition
 	  * @param computation : vecteur 1D contenant les valeurs de la simulation
 	  */
 
-void InitialisationTXT1D(FILE*ftxt,Issue_Condition init,double *computation){
+void InitializationTXT1D(FILE*ftxt,Problem_Condition init,double *computation){
         fprintf( ftxt, "%d %d\n",init.Domaine_Init.Nx,init.Domaine_Init.Nt);//Dimension de la matrice de solution [X,Y]
         int n;
 
@@ -218,6 +245,42 @@ void InitialisationTXT1D(FILE*ftxt,Issue_Condition init,double *computation){
         fprintf(ftxt,"\n");
 }
 
+void InitializationBIN1D(FILE*fbin,Problem_Condition init,double *computation){
+        printf("\n");
+
+        //Dimension of the output [X,Y]
+        fwrite(&init.Domaine_Init.Nx,sizeof(int),1,fbin);
+        fwrite(&init.Domaine_Init.Nt,sizeof(int),1,fbin);
+        printf("%x %x ",init.Domaine_Init.Nx,init.Domaine_Init.Nt);
+
+        double *value = calloc(init.Domaine_Init.Nx, sizeof( double ));;
+        for (int n=0; n<=init.Domaine_Init.Nx; n++){
+          value[n] = init.Domaine_Init.dx * n;
+        }
+        
+        computation = *init.Temp_Init;
+
+        fwrite(&value ,sizeof(double),1,fbin); //X coordonate as first set of data
+          
+        printf("\n");
+
+        for (int i = 0; i < init.Domaine_Init.Nx; i++)
+        {
+          unsigned long long int_value = *((unsigned long long*)&value[i]);
+          printf("%llx %f ",int_value,value[i]);
+        }
+        printf("\n");
+
+        for (int i = 0; i < init.Domaine_Init.Nx; i++)
+        {
+          printf("%08x",computation[i]);
+        }
+        
+
+        free(value);
+        //Writing inital conditions as second set of data
+        fwrite(&computation, sizeof(double), init.Domaine_Init.Nx, fbin);
+}
 
 /**Initilisation de l'adress d'un file
 	  * @param adress : adress du file � concat�ner
@@ -237,11 +300,11 @@ void ConcatenationFile2D(char *adress,const char* racine,int i){
 
 /**Ecriture des dimensions et temp�ratures initiales du probl�me bidimensionnel dans un file txt
 	  * @param adress : file texte � initialiser
-	  * @param init : Issue_Condition
+	  * @param init : Problem_Condition
 	  * @param computation : matrice contenant les valeurs de la simulation
 	  */
 
-void Initilisation_Computation2D(char* adress,Issue_Condition init,double **computation){
+void Initilisation_Computation2D(char* adress,Problem_Condition init,double **computation){
     int n,m;
 
     FILE*ftxt = fopen(adress, "w"); //file r�ponse

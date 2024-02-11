@@ -1,16 +1,16 @@
-#ifndef Initialisation_h
-#define Initialisation_h
+#ifndef Initialization_h
+#define Initialization_h
 
 #include <stdlib.h>
 #include <stdio.h>
 #include "Computation.h"
 
 
-Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition domain); //Initialiser une structure Condition_Problemme
+Problem_Condition Create_Problem_Condition(int Nx , int Ny,Environment_Definition domain); //Initialiser une structure Condition_Problemme
 
-Issue_Condition Read_Issue_Condition(char* adresse , char* adresseSourcesDeChaleur,char*materialsTypesAdress,Materials_List materials);//Lecture et cr�ation de la structure des conditions du problemme
+Problem_Condition Read_Problem_Condition(char* adresse , char* adresseSourcesDeChaleur,char*materialsTypesAdress,Materials_List materials);//Lecture et cr�ation de la structure des conditions du problemme
 
-void Free_Issue_Condition(Issue_Condition *init); //Lib�ration de la m�moire allou�e a la structure des conditions du problemme
+void Free_Problem_Condition(Problem_Condition *init); //Lib�ration de la m�moire allou�e a la structure des conditions du problemme
 
 Materials_List Create_Materiaux(); //Cr�e une liste chain�e vide de materials
 

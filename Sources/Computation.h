@@ -33,7 +33,7 @@ typedef struct {
     double** Temp_Init; //matrice pour initialiser la temp�rautre
     Environment_Definition Domaine_Init; //pour initialiser notre environment �tude
 
-} Issue_Condition; //Structure contenant les informations du problemme
+} Problem_Condition; //Structure contenant les informations du problemme
 
 typedef struct{
     double K; //conductivit� thermique
@@ -52,17 +52,19 @@ typedef struct{
 }Materials_List;//Structure contenant une liste chain�e de Materiaux
 
 
-void InhomogeneousEnvironments(char* materialAdress, char* issueConditionAdress, char* heatSourcesAdress,char *materialsTypesAdress);//Fonction principale
+void InhomogeneousEnvironments(char* materialAdress, char* problemConditionAdress, char* heatSourcesAdress,char *materialsTypesAdress);//Fonction principale
 
-void ComputationInhomogeneous2D(Issue_Condition init,char* directoryAdress);//Fonction de computation et d'�criture des r�sultat pour une simulation en 2D
+void ComputationInhomogeneous2D(Problem_Condition init,char* directoryAdress);//Fonction de computation et d'�criture des r�sultat pour une simulation en 2D
 
-void ComputationInhomogeneous1D(Issue_Condition init ,char* adress);//Fonction de computation et d'�criture des r�sultat pour une simulation en 1D
+void ComputationInhomogeneous1D(Problem_Condition init ,char* adress);//Fonction de computation et d'�criture des r�sultat pour une simulation en 1D
 
-void InitialisationTXT1D(FILE*ftxt, Issue_Condition init,double *computation);//Fonction d'initialisation du file de r�ponse 1D
+void InitializationTXT1D(FILE*ftxt, Problem_Condition init,double *computation);//Fonction d'initialization du file de r�ponse 1D
+
+void InitializationBIN1D(FILE*fbin,Problem_Condition init,double *computation);//Function inizialzing binary output file for the 1D solution
 
 void ConcatenationFile2D(char* adress,const char* debut,int i);//Contatenation d'adress pour la l�cture et l'�criture de file txt
 
-void Initilisation_Computation2D(char* adress,Issue_Condition init,double **computation);//Fonction d'initialisation des computations en 2D
+void Initilisation_Computation2D(char* adress,Problem_Condition init,double **computation);//Fonction d'initialization des computations en 2D
 
 
 #endif // Computation_h

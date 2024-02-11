@@ -1,21 +1,21 @@
-#include "Initialisation.h"
+#include "Initialization.h"
 
-    #include "Initialisation.h"
+    #include "Initialization.h"
     #include "listeSC.h"
     #define TXT ".txt"
     #define DEBUT_ADRESSE "data/Resultat/"
     #define DECIMALE 10
 
-/** Cr�ation de Issue_Condition
+/** Cr�ation de Problem_Condition
 	  * @param Nx : �chantillonage spatial sur x (abcisses)
 	  * @param Ny : �chantillonage spatial sur y (ordonn�es)
 	  * @param domain : donn�es du environment d'�tude du probl�me
-	  * @return init : Issue_Condition g�n�r�
+	  * @return init : Problem_Condition g�n�r�
 	  */
 
-Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition domain){
+Problem_Condition Create_Problem_Condition(int Nx , int Ny,Environment_Definition domain){
 
-    Issue_Condition init;
+    Problem_Condition init;
     init.Domaine_Init=domain;
     init.Temp_Init= Allocate_Table_double_2D(Nx,Ny);
 
@@ -23,11 +23,11 @@ Issue_Condition Create_Issue_Condition(int Nx , int Ny,Environment_Definition do
 }
 
 
-/** Suppressions des deux matrixs Sources de chaleur et Temp_Init(temp�ratures initiales) dans la structure Issue_Condition
-	  * @param init : Issue_Condition � supprimer
+/** Suppressions des deux matrixs Sources de chaleur et Temp_Init(temp�ratures initiales) dans la structure Problem_Condition
+	  * @param init : Problem_Condition � supprimer
 	  */
 
-void Free_Issue_Condition(Issue_Condition *init){
+void Free_Problem_Condition(Problem_Condition *init){
     int y=(init->Domaine_Init.Ny); //r�cup�re la taille des matrixs
     Free_Table((void **)init->Domaine_Init.HeatSources,y); //appelle la fonction Free_Table pour supprimer source de chaleur
     Free_Table((void **)init->Temp_Init,y); //appelle la fonction Free_Table pour supprimer Temp_Init
@@ -35,15 +35,15 @@ void Free_Issue_Condition(Issue_Condition *init){
 
 
 /** Lecture et �criture des conditions du probl�me
-	  * @param adress : adress d'un file qui contient les donn�es de la structure Issue_Condition
+	  * @param adress : adress d'un file qui contient les donn�es de la structure Problem_Condition
 		* @param heatSourcesAdress : adress d'un file qui contient l'emplacement et les variations des sources de chaleur
 	  * @param materialsTypesAdress : adress qd'un file ui contient les nombres qui correspondent � diff�rents types de mat�riaux
 	  * @param materials : liste contenant les mat�riaux et leurs caract�ristiques
-	  * @return init : Issue_Condition g�n�r�
+	  * @return init : Problem_Condition g�n�r�
 	  */
 
-Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char*materialsTypesAdress,Materials_List materials){
-    Issue_Condition init;
+Problem_Condition Read_Problem_Condition(char* adress , char* heatSourcesAdress,char*materialsTypesAdress,Materials_List materials){
+    Problem_Condition init;
     init.Temp_Init=NULL; //s�curit�
     init.Domaine_Init.HeatSources=NULL; //s�curit�
 
@@ -55,8 +55,8 @@ Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char
     FILE* fTxt=fopen(adress,"r"); //ouverture du file
     if(fTxt != NULL){
         if(fscanf(fTxt,"%lf %d %lf %d %lf %d",&x,&Nx,&y,&Ny,&t,&Nt)==6 ){ //Lecture et stockage des conditions initiales
-            init = Create_Issue_Condition(Nx,Ny,domain); //cr�ation de la structure des conditions initiales
-            //�criture des param�tres d'initialisation dans init
+            init = Create_Problem_Condition(Nx,Ny,domain); //cr�ation de la structure des conditions initiales
+            //�criture des param�tres d'initialization dans init
             init.Domaine_Init.x=x;    init.Domaine_Init.dx=x/Nx;   init.Domaine_Init.Nx=Nx;
             init.Domaine_Init.y=y;    init.Domaine_Init.dy=y/Ny;   init.Domaine_Init.Ny=Ny;
             init.Domaine_Init.t=t;    init.Domaine_Init.dt=t/Nt;   init.Domaine_Init.Nt=Nt;
@@ -66,18 +66,18 @@ Issue_Condition Read_Issue_Condition(char* adress , char* heatSourcesAdress,char
                     if( fscanf(fTxt,"%lf ",&T) ) //�criture des temp�ratures initiales dans Temp_Init
                         init.Temp_Init[i][j]=T;
                     else
-                        printf("Erreur, les valeurs d'initialisation n'ont pas ete lue\n");
+                        printf("Erreur, les valeurs d'initialization n'ont pas ete lue\n");
 
                     }//fin for Nx
                 }//fin for Ny
             }//fin if scanf
         else
-            printf("Erreur, les param�tres d'initialisation n'ont pas �t� lue\n");
+            printf("Erreur, les param�tres d'initialization n'ont pas �t� lue\n");
 
         fclose(fTxt); //fermeture du file
         }
     else
-        printf("Erreur, le file d'initialisation n'a pas �t� ouvert\n") ;
+        printf("Erreur, le file d'initialization n'a pas �t� ouvert\n") ;
 
     return init;
 }

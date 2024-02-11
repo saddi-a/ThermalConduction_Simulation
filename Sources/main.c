@@ -4,7 +4,7 @@
 
 #include "Computation.h"
 #include "listeSC.h"
-#include "Initialisation.h"
+#include "Initialization.h"
 
 #define MATERIAL "data/Materiaux.txt"
 #define INITALCONDITION "data/ConditionsInitiales.txt"
